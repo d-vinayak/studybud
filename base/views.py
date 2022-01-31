@@ -51,17 +51,20 @@ def logout_user(request):
     return redirect('home')
 
 def register_user(request):
-    form = UserCreationForm()
 
     if request.method == 'POST':
-        form = UserCreationForm()
+        form = UserCreationForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
             user.username = user.username.lower()
             user.save()
+            # form.save()
             login(request, user)
-        else:
-            messages.error(request,'Something Went Wrong')
+            messages.success(request, 'Account created successfully')
+            return redirect('home')
+
+    else:
+        form = UserCreationForm()
     return render(request, 'base/login_register.html', {'form': form})
 
 def home(request):
